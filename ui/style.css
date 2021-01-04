@@ -1,0 +1,164 @@
+@font-face {
+    font-family: 'SignPainter';
+    src: url('assets/fonts/signpainter.woff2') format('woff2')
+}
+
+@font-face {
+    font-family: 'ChaletLondonNineteenSixty';
+    src: url('@cui_character/ui/assets/fonts/chaletlondon1960.woff2') format('woff2')
+}
+
+button {
+    background: none;
+    /* background: rgba(0, 0, 0, 0.5); */
+    outline: none;
+    border: none;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.main {
+    position: absolute;
+    width: 25vw;
+    max-height: 42.6vh;
+    top: 15vh;
+    right: 3vw;
+    /* background-color: honeydew; */
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+}
+
+#title {
+    width: 100%;
+    font-family: 'SignPainter', sans-serif;
+    font-size: 4.5vw;
+    text-align: center;
+    left: 5%;
+    color: white;
+    /* background-color: hotpink; */
+}
+
+#header {
+    width: 100%;
+    height: 3vh;
+    font-family: 'ChaletLondonNineteenSixty', sans-serif;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#header-text {
+    width: 90%;
+    text-align: left;
+    margin-left: 0.2vw;
+}
+
+#header-counter {
+    width: 10%;
+    text-align: right;
+    margin-right: 0.2vw;
+}
+
+#outfit-list {
+    width: 100%;
+    min-height: 4.5vh; /* TODO: allow zero slots and remove this? */
+    /* background-color: yellowgreen; */
+    font-family: 'ChaletLondonNineteenSixty', sans-serif;
+}
+
+.slot {
+    position: relative;
+    width: 100%;
+    height: 4.5vh;
+    /* background-color: teal; */
+    background: rgba(0, 0, 0, 0.5);
+    margin-top: 0.5vh;
+    box-sizing: border-box;
+}
+
+.slot:hover {
+    border-left: 0.5vh solid #2d6eb9;
+}
+
+.slot .slot-text {
+    position: absolute;
+    width: 65%;
+    left: 5%;
+    font-size: 2vh;
+    font-weight: bold;
+    color: white;
+    transform: translateY(50%);
+}
+
+.slot .controls {
+    position: absolute;
+    display: none;
+    width: 30%;
+    height: 100%;
+    right: 0%;
+    top: 0%;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    /* background-color: yellow; */
+}
+
+.slot:hover .controls {
+    display: flex;
+}
+
+.slot .controls button {
+    top: 0.5vh;
+    height: 3.5vh;
+    width: 3.5vh;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 0.1vw;
+}
+
+.slot .controls button:hover {
+    background-size: 80%;
+}
+
+.slot .controls button.save {
+    background-image: url('assets/icons/save.svg');
+}
+
+.slot .controls button.clear {
+    background-image: url('assets/icons/clear.svg');
+}
+
+#bottom-panel {
+    width: 100%;
+    height: 5vh;
+    margin-top: 0.5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#bottom-panel button {
+    width: 50%;
+    height: 100%;
+    font-family: 'ChaletLondonNineteenSixty', sans-serif;
+    font-size: 1.5vh;
+    text-align: center;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+#bottom-panel button:hover {
+    background-color: #646464;
+}
