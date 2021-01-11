@@ -73,7 +73,6 @@ button {
     width: 100%;
     min-height: 4.5vh; /* TODO: allow zero slots and remove this? */
     /* background-color: yellowgreen; */
-    font-family: 'ChaletLondonNineteenSixty', sans-serif;
 }
 
 .slot {
@@ -86,18 +85,31 @@ button {
     box-sizing: border-box;
 }
 
-.slot:hover {
+.slot:hover, .slot.active {
     border-left: 0.5vh solid #2d6eb9;
 }
 
-.slot .slot-text {
+.slot .slot-input {
+    -webkit-appearance: none;
+    outline: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline-offset: 0;
+    /* background-color: royalblue; */
+    background-color: transparent;
+}
+
+.slot .slot-text, .slot .slot-input {
     position: absolute;
     width: 65%;
+    height: 4.5vh;
     left: 5%;
+    font-family: 'ChaletLondonNineteenSixty', sans-serif;
     font-size: 2vh;
     font-weight: bold;
+    line-height: 4.5vh;
     color: white;
-    transform: translateY(50%);
 }
 
 .slot .controls {
@@ -113,7 +125,7 @@ button {
     /* background-color: yellow; */
 }
 
-.slot:hover .controls {
+.slot:hover .controls, .slot.active .controls {
     display: flex;
 }
 
@@ -131,12 +143,36 @@ button {
     background-size: 80%;
 }
 
-.slot .controls button.save {
+.slot .controls button.edit {
     background-image: url('assets/icons/save.svg');
 }
 
 .slot .controls button.clear {
     background-image: url('assets/icons/clear.svg');
+}
+
+#info-panel {
+    position: relative;
+    width: 100%;
+    height: 3vh;
+    background: rgba(0, 0, 0, 0.5);
+    margin-top: 0.5vh;
+}
+
+#info-panel #info-text {
+    position: absolute;
+    width: 80%;
+    left: 5%;
+    font-family: 'ChaletLondonNineteenSixty', sans-serif;
+    font-weight: normal;
+    font-size: 1.5vh;
+    line-height: 3vh;
+    color: white;
+}
+
+#info-panel #info-icon {
+    position: absolute;
+    right: 5%;
 }
 
 #bottom-panel {
