@@ -8,7 +8,13 @@ $(document).ready(function() {
             if (slot.hasClass('empty')) {
                 slot.removeClass('empty');
             }
-            stopSlotEdit(slot, event.data.name)
+            stopSlotEdit(slot, event.data.name);
+
+            if (slot.find('button.clear').length == 0)
+            {
+                let editbutton = slot.find('button.edit');
+                $('<button class="clear"></button>').insertAfter(editbutton);
+            }
         }
         else if (event.data.action == 'completeDeletion') {
             let slot = $('div.slot[data-number="' + event.data.slot + '"]');
@@ -23,6 +29,9 @@ $(document).ready(function() {
                 $('body').fadeOut();
                 $('.main').fadeOut();
             }
+        }
+        else if (event.data.action == 'refresh') {
+            $('#outfit-list').html(event.data.html);
         }
         else if (event.data.action == 'abortDeletion') {
             editing = false;
@@ -103,6 +112,7 @@ function clearSlot(slot) {
         slot.addClass('empty');
     }
 
+    slot.find('button.clear').remove();
     slot.find('.slot-text').text('Empty slot');
     editing = false;
 }
@@ -118,14 +128,14 @@ $('#exit').on('click', function(event) {
     }
 });
 
-$('button.edit').on('click', function(event) {
+$('#outfit-list').on('click', 'button.edit', function(event) {
     if (!editing) {
         let slot = $(this).parents().eq(1);
         startSlotEdit(slot);
     }
 });
 
-$('button.clear').on('click', function(event) {
+$('#outfit-list').on('click', 'button.clear', function(event) {
     if (!editing) {
         let slot = $(this).parents().eq(1);
         $.post('https://cui_wardrobe/clear', JSON.stringify({

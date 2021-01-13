@@ -72,6 +72,8 @@ button {
 #outfit-list {
     width: 100%;
     min-height: 4.5vh; /* TODO: allow zero slots and remove this? */
+    display: flex;
+    flex-direction: column;
     /* background-color: yellowgreen; */
 }
 
@@ -120,7 +122,7 @@ button {
     right: 0%;
     top: 0%;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     /* background-color: yellow; */
 }
