@@ -43,6 +43,59 @@ function refocus(element) {
     element.focus();
 }
 
+function showEditPanel(slot, clearable) {
+    let controls = slot.find('.controls');
+    controls.empty();
+    controls.append($('<button class="edit"></button>'));
+
+    if (clearable) {
+        controls.append($('<button class="clear"></button>'));
+    }
+}
+
+function showConfirmPanel(slot, confirmCallback, cancelCallback) {
+    let controls = slot.find('.controls');
+    let acceptbutton = $('<button class="accept"></button>');
+    let cancelbutton = $('<button class="cancel"></button>');
+
+    acceptbutton[0].addEventListener('click', function(event) {
+        confirmCallback(slot);
+    });
+    cancelbutton[0].addEventListener('click', function(event) {
+        cancelCallback(slot);
+    });
+
+    controls.empty();
+    controls.append(acceptbutton);
+    controls.append(cancelbutton);
+}
+
+function confirmEdit(slot) {
+    let input = slot.find('.slot-input');
+    let name = input.val().trim();
+    if (name) {
+        $.post('https://cui_wardrobe/save', JSON.stringify({
+            slot: slot.data('number'),
+            name: name
+        }));
+    }
+}
+
+function cancelEdit(slot) {
+    stopSlotEdit(slot, prevContent);
+}
+
+function confirmClear(slot) {
+    $.post('https://cui_wardrobe/clear', JSON.stringify({
+        slot: slot.data('number'),
+    }));
+}
+
+function cancelClear(slot) {
+    showEditPanel(slot, true);
+    editing = false;
+}
+
 function stopSlotEdit(slot, name) {
     if (slot.hasClass('active')) {
         slot.removeClass('active');
@@ -50,7 +103,8 @@ function stopSlotEdit(slot, name) {
 
     let input = slot.find('.slot-input');
     let content = name;
-    if(!content.trim()) {
+    let empty = slot.hasClass('empty');
+    if (!content.trim()) {
         content = 'Empty slot'
     }
     let text = $('<span class="slot-text">' + content + '</span>');
@@ -61,6 +115,8 @@ function stopSlotEdit(slot, name) {
         $(this).css('pointer-events', 'auto');
     });
 
+    showEditPanel(slot, !empty);
+
     editing = false;
 }
 
@@ -68,6 +124,8 @@ function startSlotEdit(slot) {
     if (!(slot.hasClass('active'))) {
         slot.addClass('active');
     }
+
+    showConfirmPanel(slot, confirmEdit, cancelEdit);
 
     let empty = slot.hasClass('empty');
     let text = slot.find('.slot-text');
@@ -86,17 +144,10 @@ function startSlotEdit(slot) {
 
     input[0].addEventListener('keyup', function(event) {
         if (event.keyCode === 13) {
-            let name = input.val().trim();
-            if (name) {
-                // TODO: Validate input somehow? here? on the server?
-                $.post('https://cui_wardrobe/save', JSON.stringify({
-                    slot: slot.data('number'),
-                    name: name
-                }));
-            }
+            confirmEdit(slot);
         }
         else if (event.keyCode === 27) {
-            stopSlotEdit(slot, prevContent);
+            cancelEdit(slot);
         }
     });
     input.focus();
@@ -112,7 +163,7 @@ function clearSlot(slot) {
         slot.addClass('empty');
     }
 
-    slot.find('button.clear').remove();
+    showEditPanel(slot, false);
     slot.find('.slot-text').text('Empty slot');
     editing = false;
 }
@@ -138,9 +189,7 @@ $('#outfit-list').on('click', 'button.edit', function(event) {
 $('#outfit-list').on('click', 'button.clear', function(event) {
     if (!editing) {
         let slot = $(this).parents().eq(1);
-        $.post('https://cui_wardrobe/clear', JSON.stringify({
-            slot: slot.data('number'),
-        }));
+        showConfirmPanel(slot, confirmClear, cancelClear);
 
         editing = true;
     }
