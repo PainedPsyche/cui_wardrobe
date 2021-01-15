@@ -194,3 +194,12 @@ $('#outfit-list').on('click', 'button.clear', function(event) {
         editing = true;
     }
 });
+
+$('#outfit-list').on('click', 'div.slot', function(event) {
+    if (!editing) {
+        let number = $(this).data('number');
+        $.post('https://cui_wardrobe/load', JSON.stringify({
+            slot: number,
+        }));
+    }
+});

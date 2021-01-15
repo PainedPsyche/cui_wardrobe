@@ -35,6 +35,8 @@ ESX.RegisterServerCallback('cui_wardrobe:saveOutfit', function(source, cb, data)
         processing[identifier][slot] = true
         Citizen.CreateThread(function()
             local name = data['name']
+            local clothes = data['clothes']
+
             -- TODO: Validate data (name?)
             MySQL.Async.fetchScalar('SELECT 1 FROM outfits WHERE owner = @identifier AND slot = @slot', {
                 ['@identifier'] = identifier,
@@ -42,11 +44,11 @@ ESX.RegisterServerCallback('cui_wardrobe:saveOutfit', function(source, cb, data)
             }, function(exists)
                 -- TODO: Maybe split new (insert into) and edit (update) ?
                 if exists then
-                    MySQL.Async.execute('UPDATE outfits SET name = @name, clothes = @data WHERE owner = @identifier AND slot = @slot', {
+                    MySQL.Async.execute('UPDATE outfits SET name = @name, clothes = @clothes WHERE owner = @identifier AND slot = @slot', {
                         ['@identifier'] = identifier,
                         ['@slot'] = slot,
                         ['@name'] = name,
-                        ['@data'] = json.encode(data)
+                        ['@clothes'] = json.encode(clothes)
                     }, function(rowsChanged)
                         if rowsChanged then
                             cb(true)
@@ -56,11 +58,11 @@ ESX.RegisterServerCallback('cui_wardrobe:saveOutfit', function(source, cb, data)
                         processing[identifier][slot] = nil
                     end)
                 else
-                    MySQL.Async.execute('INSERT INTO outfits (owner, slot, name, clothes) VALUES (@identifier, @slot, @name, @data)', {
+                    MySQL.Async.execute('INSERT INTO outfits (owner, slot, name, clothes) VALUES (@identifier, @slot, @name, @clothes)', {
                         ['@identifier'] = identifier,
                         ['@slot'] = slot,
                         ['@name'] = name,
-                        ['@data'] = json.encode(data)
+                        ['@clothes'] = json.encode(clothes)
                     }, function(rowsChanged)
                         if rowsChanged then
                             cb(true)
@@ -152,7 +154,7 @@ ESX.RegisterServerCallback('cui_wardrobe:getOutfitInSlot', function(source, cb, 
     }, function(result)
         local outfit = {}
 
-        if result ~= nil then
+        if result[1] ~= nil then
             outfit = { name = result[1]['name'], data = json.decode(result[1]['clothes']) }
         end
 

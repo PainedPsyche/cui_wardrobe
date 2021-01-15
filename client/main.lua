@@ -36,6 +36,7 @@ end)
 
 local isVisible = false
 local isOpening = false
+local isLoading = false
 local outfits = {}
 
 function setVisible(visible)
@@ -106,6 +107,16 @@ RegisterNUICallback('close', function(data, cb)
 end)
 
 RegisterNUICallback('save', function(data, cb)
+    data['clothes'] = nil
+
+    TriggerEvent('cui_character:getCurrentClothes', function(currentClothes)
+        data['clothes'] = currentClothes
+    end)
+
+    while not data['clothes'] do
+        Wait(100)
+    end
+
     ESX.TriggerServerCallback('cui_wardrobe:saveOutfit', function(callback)
         if callback then
             -- TODO: save success
@@ -134,6 +145,22 @@ RegisterNUICallback('clear', function(data, cb)
             })
         end
     end, tonumber(data['slot']))
+end)
+
+RegisterNUICallback('load', function(data, cb)
+    if not isLoading then
+        ESX.TriggerServerCallback('cui_wardrobe:getOutfitInSlot', function(outfit)
+            if outfit and outfit['data'] then
+                -- Outfit data exists
+                TriggerEvent('cui_character:updateClothes', outfit['data'], true, true, function()
+                    isLoading = false
+                end)
+            else
+                --Failure
+                isLoading = false
+            end
+        end, tonumber(data['slot']))
+    end
 end)
 
 Citizen.CreateThread(function()
