@@ -22,6 +22,7 @@ $(document).ready(function() {
         }
         else if (event.data.action == 'setVisible') {
             if (event.data.value) {
+                $('#info-icon').attr('src', 'https://nui-img/shared/info_icon_32')
                 $('body').fadeIn();
                 $('.main').fadeIn();
             }
