@@ -10,7 +10,6 @@
 
 button {
     background: none;
-    /* background: rgba(0, 0, 0, 0.5); */
     outline: none;
     border: none;
 }
@@ -26,23 +25,21 @@ button {
 .main {
     position: absolute;
     width: 25vw;
-    max-height: 42.6vh;
-    top: 15vh;
+    max-height: calc(100% - 11vh);
+    top: 5vh;
     right: 3vw;
-    /* background-color: honeydew; */
     display: flex;
     flex-direction: column;
     justify-content: baseline;
 }
 
 #title {
-    width: 100%;
+    width: calc(100% - 0.4vw);
     font-family: 'SignPainter', sans-serif;
     font-size: 4.5vw;
     text-align: center;
     left: 5%;
     color: white;
-    /* background-color: hotpink; */
 }
 
 #header {
@@ -74,17 +71,18 @@ button {
     min-height: 4.5vh; /* TODO: allow zero slots and remove this? */
     display: flex;
     flex-direction: column;
-    /* background-color: yellowgreen; */
+    align-content: flex-start;
+    overflow-y: scroll;
 }
 
 .slot {
     position: relative;
     width: 100%;
     height: 4.5vh;
-    /* background-color: teal; */
     background: rgba(0, 0, 0, 0.5);
     margin-top: 0.5vh;
     box-sizing: border-box;
+    flex: 0 0 auto;
 }
 
 .slot:hover, .slot.active {
@@ -98,7 +96,6 @@ button {
     padding: 0;
     margin: 0;
     outline-offset: 0;
-    /* background-color: royalblue; */
     background-color: transparent;
 }
 
@@ -124,7 +121,6 @@ button {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    /* background-color: yellow; */
 }
 
 .slot:hover .controls, .slot.active .controls {
@@ -163,10 +159,11 @@ button {
 
 #info-panel {
     position: relative;
-    width: 100%;
+    width: calc(100% - 0.4vw);
     height: 3vh;
     background: rgba(0, 0, 0, 0.5);
     margin-top: 0.5vh;
+    flex: 0 0 auto;
 }
 
 #info-panel #info-text {
@@ -186,7 +183,7 @@ button {
 }
 
 #bottom-panel {
-    width: 100%;
+    width: calc(100% - 0.4vw);
     height: 5vh;
     margin-top: 0.5vh;
     display: flex;
@@ -207,4 +204,12 @@ button {
 
 #bottom-panel button:hover {
     background-color: #646464;
+}
+
+::-webkit-scrollbar {
+    width: 0.4vw;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #f0f0f0
 }
