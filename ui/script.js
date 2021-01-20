@@ -93,7 +93,16 @@ function confirmClear(slot) {
 }
 
 function cancelClear(slot) {
+    if (slot.hasClass('active')) {
+        slot.removeClass('active');
+    }
+
+    slot.siblings().each(function() {
+        $(this).css('pointer-events', 'auto');
+    });
+
     showEditPanel(slot, true);
+
     editing = false;
 }
 
@@ -166,6 +175,11 @@ function clearSlot(slot) {
 
     showEditPanel(slot, false);
     slot.find('.slot-text').text('Empty slot');
+
+    slot.siblings().each(function() {
+        $(this).css('pointer-events', 'auto');
+    });
+
     editing = false;
 }
 
@@ -190,7 +204,16 @@ $('#outfit-list').on('click', 'button.edit', function(event) {
 $('#outfit-list').on('click', 'button.clear', function(event) {
     if (!editing) {
         let slot = $(this).parents().eq(1);
+
+        if (!(slot.hasClass('active'))) {
+            slot.addClass('active');
+        }
+
         showConfirmPanel(slot, confirmClear, cancelClear);
+
+        slot.siblings().each(function() {
+            $(this).css('pointer-events', 'none');
+        });
 
         editing = true;
     }
