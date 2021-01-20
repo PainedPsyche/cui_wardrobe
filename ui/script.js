@@ -8,7 +8,7 @@ $(document).ready(function() {
             if (slot.hasClass('empty')) {
                 slot.removeClass('empty');
             }
-            stopSlotEdit(slot, event.data.name);
+            stopSlotEdit(slot, event.data.name, true);
 
             if (slot.find('button.clear').length == 0)
             {
@@ -22,7 +22,8 @@ $(document).ready(function() {
         }
         else if (event.data.action == 'setVisible') {
             if (event.data.value) {
-                $('#info-icon').attr('src', 'https://nui-img/shared/info_icon_32')
+                $('#info-icon').attr('src', 'https://nui-img/shared/info_icon_32');
+                tooltip.text(info.default);
                 $('body').fadeIn();
                 $('.main').fadeIn();
             }
@@ -83,7 +84,7 @@ function confirmEdit(slot) {
 }
 
 function cancelEdit(slot) {
-    stopSlotEdit(slot, prevContent);
+    stopSlotEdit(slot, prevContent, false);
 }
 
 function confirmClear(slot) {
@@ -106,7 +107,7 @@ function cancelClear(slot) {
     editing = false;
 }
 
-function stopSlotEdit(slot, name) {
+function stopSlotEdit(slot, name, accepted) {
     if (slot.hasClass('active')) {
         slot.removeClass('active');
     }
@@ -127,6 +128,7 @@ function stopSlotEdit(slot, name) {
 
     showEditPanel(slot, !empty);
 
+    slot.trigger('editstopped', [accepted]);
     editing = false;
 }
 
@@ -162,6 +164,7 @@ function startSlotEdit(slot) {
     });
     input.focus();
 
+    slot.trigger('editstarted');
     editing = true;
 }
 
@@ -226,4 +229,60 @@ $('#outfit-list').on('click', 'div.slot', function(event) {
             slot: number,
         }));
     }
+});
+
+// Tooltips
+var tooltip = $('#info-text');
+const info = {
+    default: 'Highlight a slot for more options.',
+    change: 'Click to change to this outfit.',
+    empty: 'Click the edit button to save your current outfit in this slot.',
+    editbutton: 'Edit this slot.',
+    clearbutton: 'Clear this slot.',
+    confirmbutton: 'Confirm.',
+    cancelbutton: 'Cancel.',
+    closebutton: 'Close the wardrobe.'
+};
+
+$('#outfit-list').on('mouseenter', 'div.slot', function() {
+    if (!editing) {
+        if ($(this).hasClass('empty')) {
+            tooltip.text(info.empty);
+        }
+        else {
+            tooltip.text(info.change);
+        }
+    }
+});
+
+$('#outfit-list').on('mouseenter', 'button.edit', function() {
+    tooltip.text(info.editbutton);
+});
+
+$('#outfit-list').on('mouseenter', 'button.clear', function() {
+    tooltip.text(info.clearbutton);
+});
+
+$('#outfit-list').on('mouseenter', 'button.accept', function() {
+    tooltip.text(info.confirmbutton);
+});
+
+$('#outfit-list').on('mouseenter', 'button.cancel', function() {
+    tooltip.text(info.cancelbutton);
+});
+
+$('#outfit-list').on('mouseleave', 'button', function() {
+    $(this).parents().eq(1).trigger('mouseenter');
+});
+
+$('#outfit-list').on('mouseleave', 'div.slot', function() {
+    tooltip.text(info.default);
+});
+
+$('#bottom-panel').on('mouseenter', '#exit', function() {
+    tooltip.text(info.closebutton);
+});
+
+$('#bottom-panel').on('mouseleave', '#exit', function() {
+    tooltip.text(info.default);
 });

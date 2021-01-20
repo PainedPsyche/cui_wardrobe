@@ -172,13 +172,15 @@ button {
     left: 5%;
     font-family: 'ChaletLondonNineteenSixty', sans-serif;
     font-weight: normal;
-    font-size: 1.5vh;
+    font-size: 1.3vh;
     line-height: 3vh;
     color: white;
 }
 
 #info-panel #info-icon {
     position: absolute;
+    height: 100%;
+    width: auto;
     right: 5%;
 }
 
