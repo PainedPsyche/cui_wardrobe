@@ -65,6 +65,17 @@ function showConfirmPanel(slot, confirmCallback, cancelCallback) {
     });
     cancelbutton[0].addEventListener('click', function(event) {
         cancelCallback(slot);
+
+        /*  NOTE: (Workaround)
+
+            For some reason this button's sound does not play
+            when clicked without this. 
+
+            Possibly the button is removed too fast?
+        */
+        $.post('https://cui_wardrobe/playSound', JSON.stringify({
+            sound: 'smallbuttonclick'
+        }));
     });
 
     controls.empty();
@@ -79,6 +90,11 @@ function confirmEdit(slot) {
         $.post('https://cui_wardrobe/save', JSON.stringify({
             slot: slot.data('number'),
             name: name
+        }));
+    }
+    else {
+        $.post('https://cui_wardrobe/playSound', JSON.stringify({
+            sound: 'error'
         }));
     }
 }
@@ -192,8 +208,9 @@ $('#exit').on('click', function(event) {
         }));
     }
     else {
-        // TODO: play sound
-        console.log('stop editing first!')
+        $.post('https://cui_wardrobe/playSound', JSON.stringify({
+            sound: 'error'
+        }));
     }
 });
 
@@ -224,10 +241,20 @@ $('#outfit-list').on('click', 'button.clear', function(event) {
 
 $('#outfit-list').on('click', 'div.slot', function(event) {
     if (!editing) {
-        let number = $(this).data('number');
-        $.post('https://cui_wardrobe/load', JSON.stringify({
-            slot: number,
-        }));
+        if ($(this).hasClass('empty')) {
+            $.post('https://cui_wardrobe/playSound', JSON.stringify({
+                sound: 'error'
+            }));
+        }
+        else {
+            let number = $(this).data('number');
+            $.post('https://cui_wardrobe/load', JSON.stringify({
+                slot: number,
+            }));
+            $.post('https://cui_wardrobe/playSound', JSON.stringify({
+                sound: 'changeoutfit'
+            }));
+        }
     }
 });
 
@@ -286,3 +313,17 @@ $('#bottom-panel').on('mouseenter', '#exit', function() {
 $('#bottom-panel').on('mouseleave', '#exit', function() {
     tooltip.text(info.default);
 });
+
+// Sounds
+$('#outfit-list').on('click', 'button', function() {
+    $.post('https://cui_wardrobe/playSound', JSON.stringify({
+        sound: 'smallbuttonclick'
+    }));
+});
+
+$('#bottom-panel').on('click', 'button', function() {
+    $.post('https://cui_wardrobe/playSound', JSON.stringify({
+        sound: 'panelbuttonclick'
+    }));
+});
+
