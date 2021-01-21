@@ -111,6 +111,11 @@ button {
     color: white;
 }
 
+.slot.empty .slot-text, .slot .slot-input::placeholder {
+    color: grey;
+    font-style: oblique;
+}
+
 .slot .controls {
     position: absolute;
     display: none;
