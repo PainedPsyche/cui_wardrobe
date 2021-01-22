@@ -176,6 +176,100 @@ RegisterNUICallback('playSound', function(data, cb)
     end
 end)
 
+-- Map Locations
+if not Config.UseAnywhere then
+    local closestCoords = nil
+    local distToClosest = 1000.0
+    local inMarkerRange = false
+
+    function DisplayTooltip(suffix)
+        SetTextComponentFormat('STRING')
+        AddTextComponentString('Press ~INPUT_PICKUP~ to ' .. suffix)
+        DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+    end
+
+    function UpdateClosestLocation(locations)
+        local pedPosition = GetEntityCoords(PlayerPedId())
+        for i = 1, #locations do
+            local loc = locations[i]
+            local distance = GetDistanceBetweenCoords(pedPosition.x, pedPosition.y, pedPosition.z, loc[1], loc[2], loc[3], true)
+            if (distToClosest == nil or closestCoords == nil) or (distance < distToClosest) or (closestCoords == loc) then
+                distToClosest = distance
+                closestCoords = vector3(loc[1], loc[2], loc[3])
+            end
+
+            if (distToClosest < 20.0) and (distToClosest > 1.0) then
+                inMarkerRange = true
+            else
+                inMarkerRange = false
+            end
+        end
+    end
+
+    local waitTime = 2000
+    Citizen.CreateThread(function()
+        while true do
+            if distToClosest > 500.0 then
+                waitTime = 5000
+            elseif distToClosest > 100.0 then
+                waitTime = 2000
+            else
+                waitTime = 500
+            end
+
+            UpdateClosestLocation(Config.Locations)
+            Citizen.Wait(waitTime)
+        end
+    end)
+
+    Citizen.CreateThread(function()
+        while true do
+            if inMarkerRange then
+                DrawMarker(
+                    20,
+                    closestCoords.x, closestCoords.y, closestCoords.z,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    1.0, 1.0, 1.0,
+                    45, 110, 185, 128,
+                    true,   -- move up and down
+                    false,
+                    2,
+                    true,  -- rotate
+                    nil,
+                    nil,
+                    false
+                )
+            end
+
+            if distToClosest < 1.0 and (not isVisible) then
+                DisplayTooltip('use wardrobe.')
+                if IsControlJustPressed(1, 38) then
+                    TriggerEvent('cui_wardrobe:open')
+                end
+            end
+
+            Citizen.Wait(0)
+        end
+    end)
+
+    if Config.DisplayBlips then
+        Citizen.CreateThread(function()
+            for k, v in ipairs(Config.Locations) do
+                local blip = AddBlipForCoord(v)
+                SetBlipSprite(blip, 366)
+                SetBlipColour(blip, 84)
+                SetBlipAsShortRange(blip, true)
+
+                BeginTextCommandSetBlipName('STRING')
+                AddTextComponentString('Wardrobe')
+                EndTextCommandSetBlipName(blip)
+            end
+        end)
+    end
+end
+
+-- Default controls
 Citizen.CreateThread(function()
     while true do
         if isVisible then
