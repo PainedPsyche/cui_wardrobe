@@ -1,30 +1,3 @@
-function dump(o)
-    if type(o) == 'table' then
-    local s = '{ '
-    for k,v in pairs(o) do
-        if type(k) ~= 'number' then k = '"'..k..'"' end
-        s = s .. '['..k..'] = ' .. dump(v) .. ','
-    end
-    return s .. '} '
-    else
-    return tostring(o)
-    end
-end
-
-function dumpToChat(arg)
-    local argVals
-    if type(arg) == 'table' then
-        argVals = {'Me', dump(arg)}
-    else
-        argVals = {'Me', arg}
-    end 
-    TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
-        multiline = true,
-        args = argVals
-    })
-end
-
 ESX = nil
 
 Citizen.CreateThread(function()
