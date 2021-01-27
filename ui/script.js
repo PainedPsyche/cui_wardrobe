@@ -1,5 +1,6 @@
 var editing = false;
 var prevContent = '';
+var model = 'unknown'
 
 $(document).ready(function() {
     window.addEventListener('message', function(event) {
@@ -33,6 +34,7 @@ $(document).ready(function() {
             }
         }
         else if (event.data.action == 'refresh') {
+            model = event.data.model;
             $('#outfit-list').html(event.data.html);
         }
         else if (event.data.action == 'abortDeletion') {
@@ -241,7 +243,8 @@ $('#outfit-list').on('click', 'button.clear', function(event) {
 
 $('#outfit-list').on('click', 'div.slot', function(event) {
     if (!editing) {
-        if ($(this).hasClass('empty')) {
+        let compatibleModel = (model == $(this).data('gender'));
+        if ($(this).hasClass('empty') || !compatibleModel) {
             $.post('https://cui_wardrobe/playSound', JSON.stringify({
                 sound: 'error'
             }));

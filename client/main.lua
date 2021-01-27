@@ -58,15 +58,31 @@ function refreshUI()
     for i = 1, Config.SlotsNumber do
         if outfits[i] ~= nil then
             -- existing outfit
-            html = html .. '<div class="slot" data-number="' .. i .. '"><span class="slot-text">' .. outfits[i].name ..'</span><div class="controls"><button class="edit"></button><button class="clear"></button></div></div>'
+            local gender = nil
+            if outfits[i].data.sex == 0 then
+                gender = 'male'
+            else
+                gender = 'female'
+            end
+
+            html = html .. '<div class="slot" data-number="' .. i .. '" data-gender="' .. gender .. '"><span class="slot-text">' .. outfits[i].name ..'</span><div class="controls"><button class="edit"></button><button class="clear"></button></div></div>'
         else
             -- empty slot
             html = html .. '<div class="slot empty" data-number="' .. i .. '"><span class="slot-text">' .. emptyName ..'</span><div class="controls"><button class="edit"></button></div></div>'
         end
     end
+
+    local model = 'unknown'
+    if GetEntityModel(PlayerPedId()) == GetHashKey('mp_m_freemode_01') then
+        model = 'male'
+    elseif GetEntityModel(PlayerPedId()) == GetHashKey('mp_f_freemode_01') then
+        model = 'female'
+    end
+
     SendNUIMessage({
         action = 'refresh',
-        html = html
+        html = html,
+        model = model
     })
 end
 
