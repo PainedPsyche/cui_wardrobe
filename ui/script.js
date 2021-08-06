@@ -9,6 +9,7 @@ $(document).ready(function() {
             if (slot.hasClass('empty')) {
                 slot.removeClass('empty');
             }
+            slot.data('gender', event.data.gender)
             stopSlotEdit(slot, event.data.name, true);
 
             if (slot.find('button.clear').length == 0)

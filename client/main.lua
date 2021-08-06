@@ -1,11 +1,4 @@
-ESX = nil
-
-Citizen.CreateThread(function()
-    while ESX == nil do
-        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-        Citizen.Wait(0)
-    end
-end)
+ESX = exports['es_extended']:getSharedObject() or nil
 
 local isVisible = false
 local isOpening = false
@@ -109,9 +102,16 @@ RegisterNUICallback('save', function(data, cb)
     ESX.TriggerServerCallback('cui_wardrobe:saveOutfit', function(callback)
         if callback then
             -- TODO: save success
+            local gender = nil
+            if data['sex'] == 0 then
+                gender = 'male'
+            else
+                gender = 'female'
+            end
             SendNUIMessage({
                 action = 'completeEdit',
                 slot = tonumber(data['slot']),
+                gender = gender,
                 name = data['name']
             })
         else
@@ -138,6 +138,7 @@ end)
 
 RegisterNUICallback('load', function(data, cb)
     if not isLoading then
+        isLoading = true
         ESX.TriggerServerCallback('cui_wardrobe:getOutfitInSlot', function(outfit)
             if outfit and outfit['data'] then
                 -- Outfit data exists
