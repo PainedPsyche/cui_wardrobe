@@ -1,5 +1,16 @@
 ESX = exports['es_extended']:getSharedObject() or nil
 
+if not ESX then
+    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+else
+    AddEventHandler('esx:setPlayerData', function(key, val, last)
+        if GetInvokingResource() == 'es_extended' then
+            ESX.PlayerData[key] = val
+            if OnPlayerData ~= nil then OnPlayerData(key, val, last) end
+        end
+    end)
+end
+
 local isVisible = false
 local isOpening = false
 local isLoading = false

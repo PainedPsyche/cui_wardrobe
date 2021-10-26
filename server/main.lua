@@ -1,3 +1,9 @@
+ESX = exports['es_extended']:getSharedObject() or nil
+
+if not ESX then
+    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+end
+
 if not ESX then
     SetTimeout(3000, print('[^3WARNING^7] Unable to start cui_wardrobe - your version of ESX is not compatible '))
 end
